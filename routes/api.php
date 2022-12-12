@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('/register',[\App\Http\Controllers\Api\UserController::class, 'register']);
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/view', [\App\Http\Controllers\Api\BooksController::class, 'index']);
+Route::post('/create', [\App\Http\Controllers\Api\BooksController::class, 'create']);
+Route::put('/update', [\App\Http\Controllers\Api\BooksController::class, 'update']);
+Route::delete('/delete', [\App\Http\Controllers\Api\BooksController::class, 'destroy']);
