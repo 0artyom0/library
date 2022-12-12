@@ -17,30 +17,23 @@
                 @include('result')
 
             </div>
-            <div style="display: flex;justify-content: end">
-                @php
-                    $booksCount = \App\Models\Books::count();
-                    $count = count($books);
+            @if($pageCount>0)
+                <div style="display: flex;justify-content: end">
+                    <ul class="pagination">
+                        <a href="">&laquo;</a>
+                        @for($i=0;$i<$pageCount;$i++)
+                            @php
+                                $j=$i+1;
+                            @endphp
+                            <a href="{{url('/?page='.$j)}}">{{$i+1}}</a>
 
-                    $countValue = $booksCount /$count;
-                    $number=number_format(ceil($countValue));
-                    $val=(int)$number;
-
-                @endphp
-                <ul class="pagination">
-                    <a href="">&laquo;</a>
-                    @for($i=0;$i<$val;$i++)
-                        @php
-                            $j=$i+1;
-                        @endphp
-                        <a href="{{url('/?page='.$j)}}">{{$i+1}}</a>
-                        
-                    @endfor
-                    <li>
-                        <a href="#">&raquo;</a>
-                    </li>
-                </ul>
-            </div>
+                        @endfor
+                        <li>
+                            <a href="#">&raquo;</a>
+                        </li>
+                    </ul>
+                </div>
+            @endif
         </div>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
