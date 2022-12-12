@@ -20,6 +20,18 @@ class BooksController extends Controller
         if (!empty($user)) {
             if (Hash::check($request->password, $user->password, [])) {
                 $books = Books::where('publication', $user->name)->get();
+
+                if(count($books)>0)
+                {
+                    foreach($books as $book)
+                    {
+                        $book['author'] = json_decode($book->author);
+
+                        unset($book->id);
+                        unset($book->created_at);
+                        unset($book->updated_at);
+                    }                    
+                }
                 return response()->json([
                     "message" => "Book List",
                     "data" => $books
@@ -37,7 +49,7 @@ class BooksController extends Controller
             if (Hash::check($request->password, $user->password, [])) {
                 $validator = Validator::make($request->all(), [
                     'book_name' => 'required',
-                    'author' => 'required',
+                    'authors' => 'required',
 
                 ]);
                 if ($validator->fails()) {
@@ -47,7 +59,7 @@ class BooksController extends Controller
                 $createBook->uuid = Str::uuid()->toString();
                 $createBook->book_name = $request->book_name;
                 $createBook->publication = $user->name;
-                $createBook->author = json_encode($request->author);
+                $createBook->author = $request->authors;
                 $createBook->save();
                 return response()->json([
                     "data" => $createBook->uuid
@@ -70,21 +82,28 @@ class BooksController extends Controller
                 if ($validator->fails()) {
                     return response()->json(['error' => $validator->errors()], 400);
                 }
-                $books = Books::where('uuid', $request->uuid)->first();
-                if(!empty($books))
+                $book = Books::where('uuid', $request->uuid)->first();
+                if(!empty($book))
                 {
-                    $books->book_name = $request->book_name;
-                    $books->publication = $user->name;
-                    $books->author = json_encode($request->author);
-                    $books->save();
+                    $book->book_name = $request->book_name;
+                    $book->publication = $user->name;
+                    $book->author = $request->author;
+                    $book->save();
+
+                    $book['author'] = json_decode($book->author);
+
+                    unset($book->id);
+                    unset($book->created_at);
+                    unset($book->updated_at);
+                    
                     return response()->json([
                         "success" => true,
                         "message" => "Book updated successfully.",
-                        "data" => $books
+                        "data" => $book
                     ]);
                 }
                 else{
-                    abort(400);
+                    return response()->json(['error' => 'Book not found'], 400);
                 }
             }
         }
@@ -97,18 +116,25 @@ class BooksController extends Controller
         $user = User::where('email', $request->email)->first();
         if (!empty($user)) {
             if (Hash::check($request->password, $user->password, [])) {
-                $books = Books::where('uuid', $request->uuid)->first();
-                if(!empty($books))
-                {
-                    $books->delete();
+                $validator = Validator::make($request->all(), [
+                    'uuid' => 'required',
+                ]);
+                if ($validator->fails()) {
+                    return response()->json(['error' => $validator->errors()], 400);
+                }
+
+                $book = Books::where('uuid', $request->uuid)->first();      
+                
+                if($book!=null && !empty($book))
+                {  
+                    $book->delete();
                     return response()->json([
                         "success" => true,
                         "message" => "Book deleted successfully.",
-                        "data" => $books
                     ]);
                 }
                 else{
-                    abort(400);
+                    return response()->json(['error' => 'Book not found'], 400);
                 }
             }
         }
