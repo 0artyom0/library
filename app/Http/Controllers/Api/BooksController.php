@@ -77,7 +77,7 @@ class BooksController extends Controller
             if (Hash::check($request->password, $user->password, [])) {
                 $validator = Validator::make($request->all(), [
                     'book_name' => 'required',
-                    'author' => 'required',
+                    'authors' => 'required',
                 ]);
                 if ($validator->fails()) {
                     return response()->json(['error' => $validator->errors()], 400);
@@ -87,7 +87,7 @@ class BooksController extends Controller
                 {
                     $book->book_name = $request->book_name;
                     $book->publication = $user->name;
-                    $book->author = $request->author;
+                    $book->author = $request->authors;
                     $book->save();
 
                     $book['author'] = json_decode($book->author);
