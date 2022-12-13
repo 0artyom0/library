@@ -88,10 +88,10 @@ class BooksController extends Controller
                 if(!empty($book))
                 {
                     $book->book_name = $request->book_name;
-                    $book->author = $request->authors;
+                    $book->author = json_decode($request->authors);
                     $book->save();
 
-                    $book['author'] = json_decode($book->author);
+                    $book['author'] = $book->author;
 
                     unset($book->id);
                     unset($book->publicator_id);
