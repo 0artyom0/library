@@ -2,11 +2,11 @@
 
     <thead class="text-primary">
         <tr>
-            <th>ID</th>
+            <th>N</th>
 
             <th>{{__('books.bookName')}}</th>
             <th>{{__('books.publication')}}</th>
-            <th>{{__('books.author')}}</th>
+            <th>{{__('books.authors')}}</th>
 
         </tr>
     </thead>
@@ -20,7 +20,7 @@
                         {{$book->publication}}
                     </td>
                     <td>
-                        @foreach(json_decode($book->author) as $key=>$val)
+                        @foreach(($book->author) as $key=>$val)
 
                             {{$val}}
 

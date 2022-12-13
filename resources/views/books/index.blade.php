@@ -17,7 +17,7 @@
                 @include('result')
 
             </div>
-            @if($pageCount>0)
+            @if($pageCount>1)
                 <div style="display: flex;justify-content: end">
                     <ul class="pagination">
                         <a href="">&laquo;</a>
@@ -53,7 +53,6 @@
             {
                 $(document).on('click', '.pagination a',function(event)
                 {
-                // alert(event)
                     event.preventDefault();
 
                     $('li').removeClass('active');
@@ -68,13 +67,12 @@
             });
 
             function getData(page){
-                $.ajax(
-                    {
-                        url: '?page=' + page,
-                        type: "GET",
-                        datatype: "html"
-                    }).done(function(data){
-                        console.log(data)
+                $.ajax({
+                    url: '?page=' + page,
+                    type: "GET",
+                    datatype: "html"
+                }).done(function(data){
+                    console.log(data)
                     $("#tag_container").empty().html(data);
                     location.hash = page;
                 }).fail(function(data){
