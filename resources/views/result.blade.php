@@ -14,7 +14,7 @@
         @if(!empty($books))
             @foreach($books as $key=>$book)
                 <tr>
-                    <td>{{$key+1}}</td>
+                    <td>{{++$start}}</td>
                     <td >{{$book->book_name}}</td>
                     <td>
                         {{$book->publication}}

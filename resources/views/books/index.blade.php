@@ -13,41 +13,38 @@
             <h1>{{__('books.books')}}</h1>
             <br>
 
-            <div id="tag_container">
+            <div class="row" id="tag_container">
                 @include('result')
 
             </div>
             @if($pageCount>1)
-                <div style="display: flex;justify-content: end">
-                    <ul class="pagination">
-                        <a href="">&laquo;</a>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        <li class="page-item prev disabled">
+                            <a class="page-link prevPage" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
                         @for($i=0;$i<$pageCount;$i++)
                             @php
                                 $j=$i+1;
                             @endphp
-                            <a href="{{url('/?page='.$j)}}">{{$i+1}}</a>
-
+                            <li class="page-item @if($j==1) active @endif" page="{{$j}}"><a class="page-link" href="{{url('/?page='.$j)}}">{{$j}}</a></li>
                         @endfor
-                        <li>
-                            <a href="#">&raquo;</a>
+                        <li class="page-item next">
+                            <a class="page-link nextPage" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
                         </li>
                     </ul>
-                </div>
+                </nav>
             @endif
         </div>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script type="text/javascript">
-            $(window).on('hashchange', function() {
-                if (window.location.hash) {
-                    var page = window.location.hash.replace('#', '');
-                    if (page == Number.NaN || page <= 0) {
-                        return false;
-                    }else{
-                        getData(page);
-                    }
-                }
-            });
 
             $(document).ready(function()
             {
@@ -55,11 +52,63 @@
                 {
                     event.preventDefault();
 
-                    $('li').removeClass('active');
-                    $(this).parent('li').addClass('active');
+                    if(!$(this).parent('li').prev('li').hasClass('prev'))
+                    {
+                        $('.prev').removeClass('disabled');
+                    }
+                    else
+                    {
+                        $('.prev').addClass('disabled');
+                    }
 
-                    var myurl = $(this).attr('href');
-                    var page=$(this).attr('href').split('page=')[1];
+                    if(!$(this).parent('li').next('li').hasClass('next'))
+                    {
+                        $('.next').removeClass('disabled');
+                    }
+                    else
+                    {
+                        $('.next').addClass('disabled');
+                    }
+
+                    
+                    if($(this).hasClass('prevPage'))
+                    {
+                        var page = Number($('.active').attr('page'))-1;
+                        $('li').removeClass('active');
+                        $('.page-item[page='+page+']').addClass('active');
+
+                        if(!$('.active').prev('li').hasClass('prev'))
+                        {
+                            $('.prev').removeClass('disabled');
+                        }
+                        else
+                        {
+                            $('.prev').addClass('disabled');
+                        }
+                    }
+                    else if($(this).hasClass('nextPage'))
+                    {
+                        var page = Number($('.active').attr('page'))+1;
+                        $('li').removeClass('active');
+                        $('.page-item[page='+page+']').addClass('active');
+
+                        if(!$('.active').next('li').hasClass('next'))
+                        {
+                            $('.next').removeClass('disabled');
+                        }
+                        else
+                        {
+                            $('.next').addClass('disabled');
+                        }
+                    }
+                    else
+                    {
+                        $('li').removeClass('active');
+                        $(this).parent('li').addClass('active');
+
+                        var myurl = $(this).attr('href');
+                        var page=$(this).attr('href').split('page=')[1];
+                    }
 
                     getData(page);
                 });
@@ -72,9 +121,8 @@
                     type: "GET",
                     datatype: "html"
                 }).done(function(data){
-                    console.log(data)
+                    //console.log(data)
                     $("#tag_container").empty().html(data);
-                    location.hash = page;
                 }).fail(function(data){
                     console.log('No response >>', data);
                 });

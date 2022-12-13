@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
     public function index(Request $request){
-        $limit = 2;
+        $limit = 5;
         $booksCount = Books::count();
         $pageCount = 0;
 
@@ -31,7 +31,7 @@ class HomeController extends Controller
                 $number=number_format(ceil($countValue));
                 $pageCount=(int)$number;
             }
-            return view('result',['books'=>$books, 'pageCount'=>$pageCount]);
+            return view('result',['books'=>$books, 'start'=>$start]);
         }
         else{
             $books = Books::offset(0)->limit($limit)->get();      
@@ -44,7 +44,7 @@ class HomeController extends Controller
                 $pageCount=(int)$number;
             }     
             
-            return view('books.index',['books'=>$books, 'pageCount'=>$pageCount]);
+            return view('books.index',['books'=>$books, 'pageCount'=>$pageCount, 'start'=>0]);
         }        
     }
 
