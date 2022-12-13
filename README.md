@@ -5,7 +5,8 @@ The home page of the site displays all the books that have added publications th
 
 Through the REST API, it is possible to add, delete and edit published books names and their author or authors. 
 And also possible to add a new publicator.
-With more details about REST API you can see in api_documentation.docs documentation file.
+With more details about REST API you can see in "api_documentation.docs" documentation file.
+For requests testing you can use the file "library_collection.json"
 
 Technologies used are: Laravel, Php, Bootstrap, Javascript, jQuery, Ajax
 

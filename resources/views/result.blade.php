@@ -17,14 +17,21 @@
                     <td>{{++$start}}</td>
                     <td >{{$book->book_name}}</td>
                     <td>
-                        {{$book->publication}}
+                        @php
+                            $publication = App\Models\User::where('id', $book->publicator_id)->first();
+                        @endphp
+                        {{$publication->name}}
                     </td>
                     <td>
-                        @foreach(($book->author) as $key=>$val)
-
-                            {{$val}}
-
-                        @endforeach
+                        @php
+                            $cont = '';
+                            foreach(($book->author) as $key=>$val)  
+                            {                          
+                                $cont .= $val.', ';
+                            }
+                        @endphp
+                        
+                        {{trim($cont, ', ')}}
                     </td>
                 </tr>
             @endforeach

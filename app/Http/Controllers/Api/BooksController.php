@@ -19,15 +19,17 @@ class BooksController extends Controller
         $user = User::where('email', $request->email)->first();
         if (!empty($user)) {
             if (Hash::check($request->password, $user->password, [])) {
-                $books = Books::where('publication', $user->name)->get();
+                $books = Books::where('publicator_id', $user->id)->get();
 
                 if(count($books)>0)
                 {
                     foreach($books as $book)
                     {
-                        $book['author'] = json_decode($book->author);
+                        $book['publication'] = $user->name;
+                        $book['author'] = ($book->author);
 
                         unset($book->id);
+                        unset($book->publicator_id);
                         unset($book->created_at);
                         unset($book->updated_at);
                     }                    
@@ -58,8 +60,8 @@ class BooksController extends Controller
                 $createBook = new Books();
                 $createBook->uuid = Str::uuid()->toString();
                 $createBook->book_name = $request->book_name;
-                $createBook->publication = $user->name;
-                $createBook->author = $request->authors;
+                $createBook->publicator_id = $user->id;
+                $createBook->author = json_decode($request->authors);
                 $createBook->save();
                 return response()->json([
                     "data" => $createBook->uuid
@@ -86,13 +88,13 @@ class BooksController extends Controller
                 if(!empty($book))
                 {
                     $book->book_name = $request->book_name;
-                    $book->publication = $user->name;
                     $book->author = $request->authors;
                     $book->save();
 
                     $book['author'] = json_decode($book->author);
 
                     unset($book->id);
+                    unset($book->publicator_id);
                     unset($book->created_at);
                     unset($book->updated_at);
                     

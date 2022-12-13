@@ -17,7 +17,7 @@ class CreateBooksTable extends Migration
             $table->id();
             $table->uuid('uuid')->index();
             $table->string('book_name');
-            $table->string('publication');
+            $table->integer('publicator_id');
             $table->string('author');
             $table->timestamps();
         });
